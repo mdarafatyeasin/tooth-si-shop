@@ -4,6 +4,7 @@ import SingleProduct from './SingleProduct';
 
 const Products = () => {
     const [products, setProducts] = useState([])
+    const [searchTerm, setSeacrhTerm] = useState("");
     useEffect(() => {
         const url = 'data.json'
         fetch(url)
@@ -14,9 +15,14 @@ const Products = () => {
     const getSizeOption = () => {
         return [...new Set(products.map(product => product.size))];
     }
+
+    const getData = (data) => {
+        setSeacrhTerm(data)
+        // console.log(data)
+    }
     return (
         <div>
-            <Navbar size={getSizeOption()} />
+            <Navbar size={getSizeOption()} getData={getData} />
             <div className="overflow-x-auto">
                 <table className="table table-zebra w-1/2">
                     <thead className='table-nav'>
@@ -29,7 +35,15 @@ const Products = () => {
                     </thead>
                     <tbody>
                         {
-                            products.map(product => <SingleProduct key={product.id} product={product}></SingleProduct>)
+                            products.filter((products)=>{
+                                if(searchTerm == ""){
+                                    return products
+                                }else if(products.product_name.toLowerCase().includes(searchTerm.toLocaleLowerCase())){
+                                    return products
+                                }
+
+                                }
+                            ).map(product => <SingleProduct key={product.id} product={product}></SingleProduct>)
                         }
                     </tbody>
                 </table>
